@@ -1,33 +1,38 @@
 from sys import stdin
 import collections
 
-#estimates the Manhatten distance between pos and goalPos
-def estimatedPath(pos,goalPos):
+#Estimates the Manhatten distance between pos and goalPos
+def getManhattenDistance(pos,goalPos):
     estimatedCost=abs(pos[0]-goalPos[0])+abs(pos[1]-goalPos[1])
     return estimatedCost
 
-#Converts the map from text to a matrix where # gets the value -1
+# Converts the map from text to a matrix where # gets the value -1.
 def makeMap():
+    # Symbols used in the map and their corresponding values.
     available = 1
     unavailable = -1
     start = 'A'
     goal = 'B'
     
+    # Create first dimention of a two dimentional 
+    # array for internal representation of the map.
     map=[]
-    rowCounter=0
-    for linje in stdin:
+
+    # Read from file and fill the internal map with desired values.
+    for textLine in stdin:
         temp=[]
-        for j in linje:
-            if j == '.':
+        for symbol in textLine:
+            if symbol == '.':
                 temp.append(available)
-            elif j == start:
+            elif symbol == start:
                 temp.append(start)
-            elif j == goal:
+            elif symbol == goal:
                 temp.append(goal)
             else:
                 temp.append(unavailable)
-        rowCounter+=1
         map.append(temp)
+        
+    #return the two dimentional array whth mapped values
     return map
 
 
