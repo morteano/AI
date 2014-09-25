@@ -57,7 +57,7 @@ def getShortestPath(map, start, end):
         # Update values on all sides
         for neighbour_node:
             if not in visited:
-                neighbour_node.pathCost = (walked+1)+ manhattenDistance(neighbour.pos, end.pos)
+                neighbour_node.pathCost = (walked+neighbour_node.weight)+ manhattenDistance(neighbour.pos, end.pos)
                 heapq.append(neighbour_node) 
 
             # Who's your daddy?
@@ -84,15 +84,11 @@ def getShortestPath(map, start, end):
     
         return (path, total_cost)
 
+
 class Node(object):
-<<<<<<< HEAD
-    def __init__(self, position):
-        pos = position
-        pathCost = None
-=======
     def __init__(self):
         pos = None
->>>>>>> 983d415e844996ac89b26894186875840204e2f9
+        pathCost = None
         weight = None
         parent = None
         kids = []
