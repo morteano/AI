@@ -141,6 +141,20 @@ def updateNeighbours(node, map, sortedEstimateCosts, visited,endPos):
             neighbour.pastTravelCost= node.pastTravelCost+neighbour.singleNodeCost
             totalEstimateCost = neighbour.pastTravelCost+getManhattenDistance(neighbour.pos,endPos)
             heapq.heappush(sortedEstimateCosts,(totalEstimateCost,neighbour))
+
+def printPath(map, path):
+    for nodeGroup in map:
+        line = ""
+        for node in nodeGroup:
+            if node in path:
+                line+='O'
+            elif node.singleNodeCost == 0:
+                line+='O'
+            elif node.singleNodeCost == 1:
+                line+='.'
+            else:
+                line+='#'
+        print line
     
 class Node(object):
     def __init__(self):
@@ -157,5 +171,4 @@ node.pos = (3,0)
 
 (path, cost) = getShortestPath(map, startPos, endPos)
 print "path was: "
-for node in path:
-  print node.pos
+printPath(map,path)
