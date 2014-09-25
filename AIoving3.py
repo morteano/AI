@@ -21,7 +21,7 @@ def makeMap():
     map=[]
     
     # Create dictionary to hold the cost of different terrains
-    terrainCost = {'A':0, 'B':0, 'w':100, 'm':50, 'f':10, 'g':5, 'p':1, '.':1, '#':-1}
+    terrainCost = {'A':0, 'B':0, 'w':100, 'm':50, 'f':10, 'g':5, 'p':1, '.':1, '#':1000}
 
     # Init helper variables
     startPos = None
@@ -135,7 +135,7 @@ def updateNeighbours(node, map, sortedEstimateCosts, visited,endPos):
         print neighbour.pos
         if neighbour not in visited:
             # Who's your daddy?
-            if neighbour.parent != None:
+            if neighbour.parent == None:
                 neighbour.parent = node
             # Update estimated path cost, and add to heap
             neighbour.pastTravelCost= node.pastTravelCost+neighbour.singleNodeCost
