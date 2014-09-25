@@ -21,7 +21,7 @@ def makeMap():
     map=[]
     
     # Create dictionary to hold the cost of different terrains
-    terrainCost = {'A':0, 'B':0, 'w':100, 'm':50, 'f':10, 'g':5, 'p':1, '.':1, '#':1000}
+    terrainCost = {'A':0, 'B':0, 'w':100, 'm':50, 'f':10, 'g':5, 'r':1, '.':1, '#':1000}
 
     # Init helper variables
     startPos = None
@@ -50,8 +50,6 @@ def makeMap():
         row += 1
         map.append(mapVertical)
     #return the two dimentional array whth mapped values
-    print "inside makeMap, startpos and endpos:"
-    print (startPos,endPos)
     return [map,startPos,endPos]
 
 def getShortestPath(map, startPos, endPos):
@@ -68,26 +66,19 @@ def getShortestPath(map, startPos, endPos):
     while this.pos != endPos:
 
         # Update values on all sides
-        print "firing updateNeighbours with this.pos: "
-        print this.pos
         updateNeighbours(this, map, sortedEstimateCosts, visited, endPos)
 
         # Pick the cheapest seen but unvisited node
         (estimatedCost, this) = heapq.heappop(sortedEstimateCosts)
-        visited.append(this)
 
     # Reached the target node
     totalCost = this.pastTravelCost
 
     # Backtrace to get path
     path = []
-    print "starting backtracing from __ to __:"
-    print (this.pos, startPos)
     
     while this.pos != startPos:
         path.append(this)
-        print "adding pos to path: "
-        print this.pos
         this = this.parent
 
     # Reverse path
@@ -95,8 +86,6 @@ def getShortestPath(map, startPos, endPos):
     return (path, totalCost)
 
 def updateNeighbours(node, map, sortedEstimateCosts, visited,endPos):
-    print "updateNeighbours fired with node.pos:"
-    print node.pos
     
     # Get current map position
     x = node.pos[0]
@@ -105,8 +94,6 @@ def updateNeighbours(node, map, sortedEstimateCosts, visited,endPos):
     # Define boundries
     xMax = len(map)-1
     yMax = len(map[0])-1
-    print "max values for X and Y is:" 
-    print (xMax,yMax)
     
     #  Create neighbourhoodfor this node    
     neighbourhood = []
@@ -114,25 +101,19 @@ def updateNeighbours(node, map, sortedEstimateCosts, visited,endPos):
     # Only add existing neighboursto the neigbourhood
     if x is not 0:
         neighbourhood.append(map[x-1][y])
-        print "n added, not x0"
               
     if x is not xMax:
        neighbourhood.append(map[x+1][y])
-       print "n added, not xMax"
           
     if y is not 0:
         neighbourhood.append(map[x][y-1])
-        print "n added, not y0"
           
     if y is not yMax:
         neighbourhood.append(map[x][y+1])
-        print "n added, not yMax"
     
     # Update all neighbours in neighbourhood and sort them by totalEstimateCost in a heap      
     
     for neighbour in neighbourhood:
-        print "looking at n with pos:"  
-        print neighbour.pos
         if neighbour not in visited:
             # Who's your daddy?
             if neighbour.parent == None:
@@ -141,7 +122,9 @@ def updateNeighbours(node, map, sortedEstimateCosts, visited,endPos):
             neighbour.pastTravelCost= node.pastTravelCost+neighbour.singleNodeCost
             totalEstimateCost = neighbour.pastTravelCost+getManhattenDistance(neighbour.pos,endPos)
             heapq.heappush(sortedEstimateCosts,(totalEstimateCost,neighbour))
+            visited.append(neighbour)
 
+#prints the map with path marked as 'O'
 def printPath(map, path):
     for nodeGroup in map:
         line = ""
