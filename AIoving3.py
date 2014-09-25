@@ -1,12 +1,18 @@
 from sys import stdin
 import collections
 
-#Estimates the Manhatten distance between pos and goalPos
+# Estimates the Manhatten distance between pos and goalPos
 def getManhattenDistance(pos,goalPos):
     estimatedCost=abs(pos[0]-goalPos[0])+abs(pos[1]-goalPos[1])
     return estimatedCost
 
-# Converts the map from text to a matrix where # gets the value -1.
+# Checks if current position is the goal node
+def goalTest(pos, map):
+    x=pos[0]
+    y=pos[1]
+    return map[x][y]=='B'
+
+# Converts the map from text to a matrix where # gets the value -1
 def makeMap():
     # Symbols used in the map and their corresponding values.
     available = 1
@@ -79,20 +85,24 @@ def getShortestPath(map, start, end):
         return (path, total_cost)
 
 class Node(object):
+<<<<<<< HEAD
     def __init__(self, position):
         pos = position
         pathCost = None
+=======
+    def __init__(self):
+        pos = None
+>>>>>>> 983d415e844996ac89b26894186875840204e2f9
         weight = None
         parent = None
         kids = []
 
-node2 = Node((2,1))
-node = Node((2,3))
-nodeFar = Node((2,2))
+
+node = Node()
 node.pos = (2,3)
-nodeFar.pos = (2,2)
-node.parent = nodeFar
-nodeFar.kids = node
-print makeMap()
-print node.parent.pos
-print nodeFar.kids.pos
+
+map=makeMap()
+
+print goalTest(node.pos,map)
+node.pos = (3,17)
+print goalTest(node.pos,map)
