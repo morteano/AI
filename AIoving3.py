@@ -35,11 +35,53 @@ def makeMap():
     #return the two dimentional array whth mapped values
     return map
 
+def getShortestPath(map, start, end):
+    
+    walked = 0
+    visited =[]
+
+    # Start at the beginning
+    this = start
+    this.pathCost = getManhattenDistance(this.pos, end.pos)
+    visited.append(this)
+
+    # Untill target is reached
+    while this is not end:
+
+        # Update values on all sides
+        for neighbour_node:
+            if not in visited:
+                neighbour_node.pathCost = (walked+1)+ manhattenDistance(neighbour.pos, end.pos)
+                heapq.append(neighbour_node) 
+
+            # Who's your daddy?
+            if neighbour_node.father == NULL:
+                neighbour_node.father = this
+
+        # Pick the cheapest seen but unvisited node
+            candidate =heapq.pop()
+            if candidate is not in visited:
+                this = candidate
+                visited.append(this)
+            walked+=1
+
+    # Reached the target node
+    total_cost = walked
+
+    # Backtrace to get path
+    path[]
+    while not start:
+        path.append(this)
+        this = this.father
+
+    # Reverse path
+    
+        return (path, total_cost)
 
 class Node(object):
     def __init__(self, position):
         pos = position
-        print pos
+        pathCost = None
         weight = None
         parent = None
         kids = []
