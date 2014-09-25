@@ -1,5 +1,6 @@
 from sys import stdin
 import collections
+import heapq
 
 # Estimates the Manhatten distance between pos and goalPos
 def getManhattenDistance(pos,goalPos):
@@ -14,91 +15,147 @@ def goalTest(pos, map):
 
 # Converts the map from text to a matrix where # gets the value -1
 def makeMap():
-    # Symbols used in the map and their corresponding values.
-    available = 1
-    unavailable = -1
-    start = 'A'
-    goal = 'B'
     
     # Create first dimention of a two dimentional 
     # array for internal representation of the map.
     map=[]
+    
+    # Create dictionary to hold the cost of different terrains
+    terrainCost = {'A':0, 'B':0, 'w':100, 'm':50, 'f':10, 'g':5, 'p':1, '.':1, '#':-1}
 
+    # Init helper variables
+    startPos = None
+    endPos = None
+    row = 0
+    col = 0
+    
     # Read from file and fill the internal map with desired values.
     for textLine in stdin:
-        temp=[]
-        for symbol in textLine:
-            if symbol == '.':
-                temp.append(available)
-            elif symbol == start:
-                temp.append(start)
-            elif symbol == goal:
-                temp.append(goal)
+        mapVertical = []
+        for symbol in textLine:          
+            if symbol != '\n':
+                node=Node()
+                node.pos = (row,col)
+                node.singleNodeCost = terrainCost[symbol]
+                node.pastTravelCost = 0
+                node.parent = None
+                mapVertical.append(node)
+                if symbol == 'A':
+                    startPos = node.pos
+                elif symbol == 'B':
+                    endPos = node.pos
+                col += 1
             else:
-                temp.append(unavailable)
-        map.append(temp)
-        
+                col = 0
+        row += 1
+        map.append(mapVertical)
     #return the two dimentional array whth mapped values
-    return map
+    print "inside makeMap, startpos and endpos:"
+    print (startPos,endPos)
+    return [map,startPos,endPos]
 
-def getShortestPath(map, start, end):
+def getShortestPath(map, startPos, endPos):
     
-    walked = 0
+    sortedEstimateCosts = []
     visited =[]
-
+    
     # Start at the beginning
-    this = start
-    this.pathCost = getManhattenDistance(this.pos, end.pos)
+    this = map[startPos[0]][startPos[1]]
+#    this.totalEstimateCost = getManhattenDistance(this.pos, end.pos)
     visited.append(this)
 
     # Untill target is reached
-    while this is not end:
+    while this.pos != endPos:
 
         # Update values on all sides
-        for neighbour_node:
-            if not in visited:
-                neighbour_node.pathCost = (walked+neighbour_node.weight)+ manhattenDistance(neighbour.pos, end.pos)
-                heapq.append(neighbour_node) 
-
-            # Who's your daddy?
-            if neighbour_node.father == NULL:
-                neighbour_node.father = this
+        print "firing updateNeighbours with this.pos: "
+        print this.pos
+        updateNeighbours(this, map, sortedEstimateCosts, visited, endPos)
 
         # Pick the cheapest seen but unvisited node
-            candidate =heapq.pop()
-            if candidate is not in visited:
-                this = candidate
-                visited.append(this)
-            walked+=1
+        (estimatedCost, this) = heapq.heappop(sortedEstimateCosts)
+        visited.append(this)
 
     # Reached the target node
-    total_cost = walked
+    totalCost = this.pastTravelCost
 
     # Backtrace to get path
-    path[]
-    while not start:
+    path = []
+    print "starting backtracing from __ to __:"
+    print (this.pos, startPos)
+    
+    while this.pos != startPos:
         path.append(this)
-        this = this.father
+        print "adding pos to path: "
+        print this.pos
+        this = this.parent
 
     # Reverse path
+        
+    return (path, totalCost)
+
+def updateNeighbours(node, map, sortedEstimateCosts, visited,endPos):
+    print "updateNeighbours fired with node.pos:"
+    print node.pos
     
-        return (path, total_cost)
-
-
+    # Get current map position
+    x = node.pos[0]
+    y = node.pos[1]
+    
+    # Define boundries
+    xMax = len(map)-1
+    yMax = len(map[0])-1
+    print "max values for X and Y is:" 
+    print (xMax,yMax)
+    
+    #  Create neighbourhoodfor this node    
+    neighbourhood = []
+    
+    # Only add existing neighboursto the neigbourhood
+    if x is not 0:
+        neighbourhood.append(map[x-1][y])
+        print "n added, not x0"
+              
+    if x is not xMax:
+       neighbourhood.append(map[x+1][y])
+       print "n added, not xMax"
+          
+    if y is not 0:
+        neighbourhood.append(map[x][y-1])
+        print "n added, not y0"
+          
+    if y is not yMax:
+        neighbourhood.append(map[x][y+1])
+        print "n added, not yMax"
+    
+    # Update all neighbours in neighbourhood and sort them by totalEstimateCost in a heap      
+    
+    for neighbour in neighbourhood:
+        print "looking at n with pos:"  
+        print neighbour.pos
+        if neighbour not in visited:
+            # Who's your daddy?
+            if neighbour.parent != None:
+                neighbour.parent = node
+            # Update estimated path cost, and add to heap
+            neighbour.pastTravelCost= node.pastTravelCost+neighbour.singleNodeCost
+            totalEstimateCost = neighbour.pastTravelCost+getManhattenDistance(neighbour.pos,endPos)
+            heapq.heappush(sortedEstimateCosts,(totalEstimateCost,neighbour))
+    
 class Node(object):
     def __init__(self):
         pos = None
-        pathCost = None
-        weight = None
+        singleNodeCost = None
+        pastTravelCost = None
         parent = None
-        kids = []
 
 
 node = Node()
-node.pos = (2,3)
+node.pos = (3,0)
 
-map=makeMap()
+[map,startPos,endPos]=makeMap()
 
-print goalTest(node.pos,map)
-node.pos = (3,17)
-print goalTest(node.pos,map)
+(path, cost) = getShortestPath(map, startPos, endPos)
+print "path was: "
+for node in path:
+  print node.pos
