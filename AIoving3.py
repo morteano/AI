@@ -54,26 +54,27 @@ def makeMap():
 
 def getShortestPath(map, startPos, endPos, algorithm):
     
-    sortedEstimateCosts = []
-    visited =[]
+    openNodes = []
+    closedNodes =[]
+    seen = []
     
     # Start at the beginning
     this = map[startPos[0]][startPos[1]]
-#    this.totalEstimateCost = getManhattenDistance(this.pos, end.pos)
-    visited.append(this)
+    closedNodes.append(this)
+    seen.append(this)
 
     # Untill target is reached
     while this.pos != endPos:
 
         # Update values on all sides
-        updateNeighbours(this, map, sortedEstimateCosts, visited, endPos, algorithm)
+        updateNeighbours(this, map, endPos, algorithm, openNodes, seen)
 
         # Pick the cheapest seen but unvisited node
         if algorithm == "A_star" or algorithm == "Dijkstra":
-            (estimatedCost, this) = heapq.heappop(sortedEstimateCosts)
+            (estimatedCost, this) = heapq.heappop(openNodes)
         elif algorithm == "BFS":
-            sortedEstimateCosts.pop()
-
+            this = openNodes.pop()
+        closedNodes.append(this)
     # Reached the target node
     totalCost = this.pastTravelCost
 
@@ -83,12 +84,11 @@ def getShortestPath(map, startPos, endPos, algorithm):
     while this.pos != startPos:
         path.append(this)
         this = this.parent
-
+    
     # Reverse path
-        
-    return (path, totalCost)
+    return (openNodes, closedNodes, path, totalCost)
 
-def updateNeighbours(node, map, sortedEstimateCosts, visited, endPos, algorithm):
+def updateNeighbours(node, map, endPos, algorithm, openNodes, seen):
     
     # Get current map position
     x = node.pos[0]
@@ -117,7 +117,7 @@ def updateNeighbours(node, map, sortedEstimateCosts, visited, endPos, algorithm)
     # Update all neighbours in neighbourhood and sort them by totalEstimateCost in a heap      
     
     for neighbour in neighbourhood:
-        if neighbour not in visited:
+        if neighbour not in seen:
             # Who's your daddy?
             if neighbour.parent == None:
                 neighbour.parent = node
@@ -125,21 +125,27 @@ def updateNeighbours(node, map, sortedEstimateCosts, visited, endPos, algorithm)
             neighbour.pastTravelCost= node.pastTravelCost+neighbour.singleNodeCost
             if algorithm == "A_star":
                 totalEstimateCost = neighbour.pastTravelCost+getManhattenDistance(neighbour.pos,endPos)
+                heapq.heappush(openNodes,(totalEstimateCost,neighbour))
             elif algorithm == "Dijkstra":
                 totalEstimateCost = neighbour.pastTravelCost
+                heapq.heappush(openNodes,(totalEstimateCost,neighbour))
             elif algorithm == "BFS":
-                sortedEstimateCosts.insert(0,neighbour)
-            heapq.heappush(sortedEstimateCosts,(totalEstimateCost,neighbour))
-            visited.append(neighbour)
+                if neighbour.singleNodeCost != 1000:
+                    openNodes.insert(0,neighbour)
+            seen.append(neighbour)
 
 #prints the map with path marked as 'O'
-def printPath(map, path):
+def printPath(map, openNodes, closedNodes, path):
     terrainCost = {1000:'#', 100:'w', 50:'m', 10:'f', 5:'g', 2:'.', 1:'r', 0:'O'}
     for nodeGroup in map:
         line = ""
         for node in nodeGroup:
             if node in path:
                 line+='O'
+            elif node in closedNodes:
+                line+='x'
+            elif node in openNodes:
+                line+='-'
             else:
                 line += terrainCost[node.singleNodeCost]
         print line
@@ -157,6 +163,6 @@ node.pos = (3,0)
 
 [map,startPos,endPos]=makeMap()
 
-(path, cost) = getShortestPath(map, startPos, endPos, "A_star")
+(openNodes, closedNodes, path, cost) = getShortestPath(map, startPos, endPos, "Dijkstra")
 print "path was: "
-printPath(map,path)
+printPath(map, openNodes, closedNodes, path)
