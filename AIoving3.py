@@ -21,7 +21,7 @@ def makeMap():
     map=[]
     
     # Create dictionary to hold the cost of different terrains
-    terrainCost = {'A':0, 'B':0, 'w':100, 'm':50, 'f':10, 'g':5, 'r':1, '.':1, '#':1000}
+    terrainCost = {'A':0, 'B':0, 'w':100, 'm':50, 'f':10, 'g':5, '.':2, 'r':1, '#':1000}
 
     # Init helper variables
     startPos = None
@@ -69,7 +69,7 @@ def getShortestPath(map, startPos, endPos):
         updateNeighbours(this, map, sortedEstimateCosts, visited, endPos)
 
         # Pick the cheapest seen but unvisited node
-        (estimatedCost, this) = heapq.heappop(sortedEstimateCosts)
+        (estimatedCost, this) = heapq.heappop(sortedEstimateCosts)      #insert sortedEstimateCosts.pop() to get BFS
 
     # Reached the target node
     totalCost = this.pastTravelCost
@@ -120,23 +120,20 @@ def updateNeighbours(node, map, sortedEstimateCosts, visited,endPos):
                 neighbour.parent = node
             # Update estimated path cost, and add to heap
             neighbour.pastTravelCost= node.pastTravelCost+neighbour.singleNodeCost
-            totalEstimateCost = neighbour.pastTravelCost+getManhattenDistance(neighbour.pos,endPos)
-            heapq.heappush(sortedEstimateCosts,(totalEstimateCost,neighbour))
+            totalEstimateCost = neighbour.pastTravelCost+getManhattenDistance(neighbour.pos,endPos) #remove +getManhattenDistance(neighbour.pos,endPos) to get Dijkstra
+            heapq.heappush(sortedEstimateCosts,(totalEstimateCost,neighbour))           #insert sortedEstimateCosts.insert(0,neighbour)
             visited.append(neighbour)
 
 #prints the map with path marked as 'O'
 def printPath(map, path):
+    terrainCost = {1000:'#', 100:'w', 50:'m', 10:'f', 5:'g', 2:'.', 1:'r', 0:'O'}
     for nodeGroup in map:
         line = ""
         for node in nodeGroup:
             if node in path:
                 line+='O'
-            elif node.singleNodeCost == 0:
-                line+='O'
-            elif node.singleNodeCost == 1:
-                line+='.'
             else:
-                line+='#'
+                line += terrainCost[node.singleNodeCost]
         print line
     
 class Node(object):
