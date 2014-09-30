@@ -1,6 +1,7 @@
 from sys import stdin
 import collections
 import heapq
+import time
 
 # Estimates the Manhatten distance between pos and goalPos
 def getManhattenDistance(pos,goalPos):
@@ -21,7 +22,7 @@ def makeMap():
     map=[]
     
     # Create dictionary to hold the cost of different terrains
-    terrainCost = {'A':0, 'B':0, 'w':100, 'm':50, 'f':10, 'g':5, '.':2, 'r':1, '#':1000}
+    terrainCost = {'A':0, 'B':0, 'w':100, 'm':50, 'f':10, 'g':5, '.':1, 'r':2, '#':10000}
 
     # Init helper variables
     startPos = None
@@ -71,10 +72,14 @@ def getShortestPath(map, startPos, endPos, algorithm):
 
         # Pick the cheapest seen but unvisited node
         if algorithm == "A_star" or algorithm == "Dijkstra":
-            (estimatedCost, this) = heapq.heappop(openNodes)
+            (estimatedCost, this) = openNodes.pop(0)
         elif algorithm == "BFS":
             this = openNodes.pop()
         closedNodes.append(this)
+        
+        #printPath(map, seen, closedNodes, [])
+        #time.sleep(2) 
+
     # Reached the target node
     totalCost = this.pastTravelCost
 
@@ -86,7 +91,7 @@ def getShortestPath(map, startPos, endPos, algorithm):
         this = this.parent
     
     # Reverse path
-    return (openNodes, closedNodes, path, totalCost)
+    return (seen, closedNodes, path, totalCost)
 
 def updateNeighbours(node, map, endPos, algorithm, openNodes, seen):
     
@@ -125,18 +130,20 @@ def updateNeighbours(node, map, endPos, algorithm, openNodes, seen):
             neighbour.pastTravelCost= node.pastTravelCost+neighbour.singleNodeCost
             if algorithm == "A_star":
                 totalEstimateCost = neighbour.pastTravelCost+getManhattenDistance(neighbour.pos,endPos)
-                heapq.heappush(openNodes,(totalEstimateCost,neighbour))
+                if neighbour.singleNodeCost < 10000:
+                    insertInList(openNodes, (totalEstimateCost, neighbour))
             elif algorithm == "Dijkstra":
-                totalEstimateCost = neighbour.pastTravelCost
-                heapq.heappush(openNodes,(totalEstimateCost,neighbour))
+                if neighbour.singleNodeCost < 10000:
+                    totalEstimateCost = neighbour.pastTravelCost
+                    heapq.heappush(openNodes,(totalEstimateCost,neighbour))
             elif algorithm == "BFS":
-                if neighbour.singleNodeCost != 1000:
+                if neighbour.singleNodeCost != 10000:
                     openNodes.insert(0,neighbour)
             seen.append(neighbour)
 
 #prints the map with path marked as 'O'
-def printPath(map, openNodes, closedNodes, path):
-    terrainCost = {1000:'#', 100:'w', 50:'m', 10:'f', 5:'g', 2:'.', 1:'r', 0:'O'}
+def printPath(map, seen, closedNodes, path):
+    terrainCost = {10000:'#', 100:'w', 50:'m', 10:'f', 5:'g', 1:'.', 2:'r', 0:'O'}
     for nodeGroup in map:
         line = ""
         for node in nodeGroup:
@@ -144,11 +151,22 @@ def printPath(map, openNodes, closedNodes, path):
                 line+='O'
             elif node in closedNodes:
                 line+='x'
-            elif node in openNodes:
+            elif node in seen and node.singleNodeCost != 10000:
                 line+='-'
             else:
                 line += terrainCost[node.singleNodeCost]
         print line
+
+def insertInList(openNodes, (cost, element)):
+    if len(openNodes) > 0:
+        i = 0
+        while cost > openNodes[i][0] and i<len(openNodes)-1:
+            i += 1
+        if i==len(openNodes)-1:
+            i += 1
+        openNodes.insert(i, (cost, element))
+    else:
+        openNodes.insert(0, (cost, element))
     
 class Node(object):
     def __init__(self):
@@ -157,12 +175,9 @@ class Node(object):
         pastTravelCost = None
         parent = None
 
-
-node = Node()
-node.pos = (3,0)
-
 [map,startPos,endPos]=makeMap()
 
-(openNodes, closedNodes, path, cost) = getShortestPath(map, startPos, endPos, "Dijkstra")
+(seen, closedNodes, path, cost) = getShortestPath(map, startPos, endPos, "A_star")
+
 print "path was: "
-printPath(map, openNodes, closedNodes, path)
+printPath(map, seen, closedNodes, path)
