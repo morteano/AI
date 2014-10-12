@@ -1,4 +1,5 @@
 from random import randrange
+from copy import deepcopy
 
 def getStartSolution(n,k):
     solution = []
@@ -57,11 +58,45 @@ def getScore(solution, k):
     # Print score in percent of maximum score
     return (score/(4+(n-1)*6)*100)
 
-def getNeighbours(this):
-	#Find the part with the most issues
-
+def getNeighbours(x,y,solution):
 	#Create the neighbours
-	return []
+    
+    # Define boundries
+    nMax = len(solution)-1
+    
+    #  Create neighbourhood for this solution    
+    neighbourhood = []
+    
+    # Only add existing neighbours to the neigbourhood
+    if x is not 0:
+        neighbour = deepcopy(solution)
+        if neighbour[x-1][y] == 0:
+            neighbour[x][y] = 0
+            neighbour[x-1][y] = 1
+            neighbourhood.append(neighbour)
+              
+    if x is not nMax:
+       neighbour = deepcopy(solution)
+       if neighbour[x+1][y] == 0:
+            neighbour[x][y] = 0
+            neighbour[x+1][y] = 1
+            neighbourhood.append(neighbour)
+          
+    if y is not 0:
+        neighbour = deepcopy(solution)
+        if neighbour[x][y-1] == 0:
+            neighbour[x][y] = 0
+            neighbour[x][y-1] = 1
+            neighbourhood.append(neighbour)
+          
+    if y is not nMax:
+        neighbour = deepcopy(solution)
+        if neighbour[x][y+1] == 0:
+            neighbour[x][y] = 0
+            neighbour[x][y+1] = 1
+            neighbourhood.append(neighbour)
+        
+	return neighbourhood
 
 def getScores(list):
 	scores = []
@@ -80,12 +115,12 @@ def findBestSolution(solutions):
 	return solution
 
 def getNextSolution(P, PMax, T):
-	#8. Let q = F (Pmax)-F (P )F (P )
+	#8. Let q = (F(Pmax)-F(P))/F(P)
 	PMaxScore = getScore(PMax)
 	PScore = getScore(P)
 	q = (PMaxScore-PScore)/PScore
 
-	#9. Let p = min [1, e-qT ]
+	#9. Let p = min [1, e^(-q/T) ]
 	cooling = exp(-q/T)
 	if cooling < 1:
 		p = cooling
@@ -144,5 +179,23 @@ while(getScore(this,k) < F_target):
 	
 #printStats()
 
+#test1 = [1,0,1]
+#test2 = [1,1,0]
+#test3 = [0,1,1]
+#test=[]
+#test.append(test1)
+#test.append(test2)
+#test.append(test3)
+#this = test
+
+
 printSolution(this)
 print getScore(this,k)
+
+
+
+
+
+
+
+
