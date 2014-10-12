@@ -72,6 +72,31 @@ def getScore(solution,k):
             score += 1
     return score*100/(3+(n-1)*5) 
 
+def getDiagDecrease(i, j, matrix, n):
+	list = []
+	while i < n and j < n:
+		list.append(matrix[i,j])
+		i+=1
+		j+=1
+	return list
+
+def getDiagIncrease(i, j, matrix, n):
+	list = []
+	while i < n and j >= 0:
+		list.append(matrix[i,j])
+		i+=i
+		j-=j
+	return list
+
+def getScoreV2(solution, k)
+	for i in range(n):
+		getDiagDecrease(0,i)
+		getDiagDecrease(i,0)
+
+		getDiagIncrease(i,n-1)
+		getDiagIncrease(0,i)
+	return
+
 def getNeighbours(this):
 	#Find the part with the most issues
 
@@ -123,7 +148,7 @@ def getNextSolution(P, PMax, T):
 def printSolution(matrix):
     N = len(matrix)
     for row in range(N):
-        line = ""
+        line = ""m
         for col in range(N):
             line += str(matrix[row][col]) + " "
         print line
