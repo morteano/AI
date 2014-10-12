@@ -48,8 +48,15 @@ def getNeighbours(this):
 	#Create the neighbours
 	return createNeighbours(This, troubledStep)
 
-def getScore(this):
-	
+def printSolution(matrix):
+	line = ""
+	for row in range(1:M):
+		for col in range(1:N):
+			line += str(matrix[row][col])
+		print line
+
+
+
 
 
 
