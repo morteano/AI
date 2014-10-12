@@ -150,12 +150,13 @@ while(getScore(this,k) < F_target):
 	PMax=findBestSolution(neighbours)
 
 	#8-12
-	getNextSolution(this, PMax, T)
+	this = getNextSolution(this, PMax, T)
 
-	#13. T ? T - dT
+	#13. T = T - dT
 	T=T-T_Step
-# print solution
-#printSolution()
+	# print solution
+	printSolution(this)
+	
 #printStats()
 
 printSolution(this)
