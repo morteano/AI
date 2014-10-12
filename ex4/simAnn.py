@@ -1,24 +1,23 @@
+from random import randrange
 
-
-
-
+T_max = 100
+T_step = 1
+F_Target = 0
 #1. Begin at a start point P (either user-selected or randomly-generated).
-#this = getStartSolution()
+this = getStartSolution()
 
 #2. Set the temperature, T, to it's starting value: Tmax
-#Temp = T_max
+T = T_max
 
 #4. If F(P) = Ftarget then EXIT and return P as the solution; else continue.
-#while(getScore(this) < F_target):
+while(getScore(this) < F_target):
 
 	#5. Generate n neighbors of P in the search space: (P1, P2, ..., Pn).
-#	n=getNeighbours(this)
+	neighbours=getNeighbours(this)
 
 	#6. Evaluate each neighbor, yielding (F(P1), F(P2), ..., F(Pn)).
-#	ns=getScores(n)
-
 	#7. Let Pmax be the neighbor with the highest evaluation.
-#	pMax=getMaxScore(ns)
+	pMax=findBestSolution(neighbours)
 
 	#8. Let q = F (Pmax)-F (P )F (P )
 #	q=getQ(pMax,this)
@@ -37,12 +36,10 @@
 #	else:
 #		this = n[rand()*len(n)]
 	#13. T ? T - dT
-#	Temp=Temp-TempStep
+#	T=T-T_Step
 # print solution
 #printSolution()
 #printStats()
-
-from random import randrange
 
 def getStartSolution(n,k):
     solution = []
@@ -120,7 +117,23 @@ def getNeighbours(this):
 	#Find the part with the most issues
 
 	#Create the neighbours
-	return createNeighbours(This, troubledStep)
+	return []
+
+def getScores(list):
+	scores = []
+	for solution in list:
+		scores.append(getScore(solution,k))
+	return scores
+
+def findBestSolution(solutions):
+	maxScore = 0
+	bestSolution =
+	for solution in solutions:
+		thisScore = getScore(solution, k)
+		if thisScore > maxScore:
+			maxScore = thisScore
+			bestSolution = solution
+	return solution
 
 def printSolution(matrix):
     N = len(matrix)
