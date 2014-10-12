@@ -12,90 +12,50 @@ def getStartSolution(n,k):
                 row[candidate]=1
                 eggsPlaced += 1
     return solution
-    
-def getScore(solution,k):
-    n = len(solution)
+
+def getDiagDecrease(row, col, matrix, n):
+	list = []
+	while row < n and col < n:
+		list.append(matrix[row][col])
+		row+=1
+		col+=1
+	return list
+
+def getDiagIncrease(row, col, matrix, n):
+	list = []
+	while (row < n) and (col >= 0):
+            #    print j
+		list.append(matrix[row][col])
+		row+=1
+		col-=1
+	return list
+
+def getScore(solution, k):
+    scoresPartial = []
     score = 0.0
-    for col in range(n):
-        eggs = 0
-        for row in range(n):
-            eggs += solution[row][col]
-        if eggs <= k:
-            score += 1
-    
-    # Check diagonal for lower triangular matrix    
-    for row in range(n):
-        eggs = 0
-        rowTemp = row
-        colTemp = 0
-        while rowTemp < n and colTemp < n:
-            eggs += solution[rowTemp][colTemp]
-            rowTemp += 1
-            colTemp += 1
-        if eggs <= k:
-            score += 1
-            
-    # Check diagonal for upper triangular matrix            
-    for col in range(1,n):
-        eggs = 0
-        rowTemp = 0
-        colTemp = col
-        while rowTemp < n and colTemp < n:
-            eggs += solution[rowTemp][colTemp]
-            rowTemp += 1
-            colTemp += 1
-        if eggs <= k:
-            score += 1
+    n = len(solution)
+    for i in range(n):
+        #add row
+		scoresPartial.append(solution[i])
+		
+		#add col
+		col = []
+		for j in range(n):
+                    col.append(solution[j][i])
+		scoresPartial.append(col)
 
-    # Check diagonal for lower triangular matrix    
-    for row in range(n):
-        eggs = 0
-        rowTemp = row
-        colTemp = n-1
-        while rowTemp >= 0 and colTemp >= 0:
-            eggs += solution[rowTemp][colTemp]
-            rowTemp -= 1
-            colTemp -= 1
-        if eggs <= k:
-            score += 1
-            
-    # Check diagonal for upper triangular matrix            
-    for col in range(1,n):
-        eggs = 0
-        rowTemp = n-1
-        colTemp = col
-        while rowTemp >= 0 and colTemp >= 0:
-            eggs += solution[rowTemp][colTemp]
-            rowTemp -= 1
-            colTemp -= 1
-        if eggs <= k:
-            score += 1
-    return score*100/(3+(n-1)*5) 
+        #add diagonals
+		scoresPartial.append(getDiagDecrease(0,i,solution,n))
+		scoresPartial.append(getDiagDecrease(i+1,0,solution,n))
 
-def getDiagDecrease(i, j, matrix, n):
-	list = []
-	while i < n and j < n:
-		list.append(matrix[i,j])
-		i+=1
-		j+=1
-	return list
-
-def getDiagIncrease(i, j, matrix, n):
-	list = []
-	while i < n and j >= 0:
-		list.append(matrix[i,j])
-		i+=i
-		j-=j
-	return list
-
-def getScoreV2(solution, k)
-	for i in range(n):
-		getDiagDecrease(0,i)
-		getDiagDecrease(i,0)
-
-		getDiagIncrease(i,n-1)
-		getDiagIncrease(0,i)
-	return
+		scoresPartial.append(getDiagIncrease(i,n-1,solution,n))
+		scoresPartial.append(getDiagIncrease(0,i-1,solution,n))
+		    
+    for scorePartial in scoresPartial:
+                if (sum(scorePartial) <= k) and (len(scorePartial) > 0):
+                    score += 1
+    # Print score in percent of maximum score
+    return (score/(4+(n-1)*6)*100)
 
 def getNeighbours(this):
 	#Find the part with the most issues
@@ -148,7 +108,7 @@ def getNextSolution(P, PMax, T):
 def printSolution(matrix):
     N = len(matrix)
     for row in range(N):
-        line = ""m
+        line = ""
         for col in range(N):
             line += str(matrix[row][col]) + " "
         print line
@@ -156,7 +116,7 @@ def printSolution(matrix):
 T_max = 100
 T_step = 1
 F_target = 0
-n = 4
+n = 3
 k = 2
 #1. Begin at a start point P (either user-selected or randomly-generated).
 this = getStartSolution(n,k)
@@ -186,12 +146,3 @@ while(getScore(this,k) < F_target):
 
 printSolution(this)
 print getScore(this,k)
-
-
-
-
-
-
-
-
-
