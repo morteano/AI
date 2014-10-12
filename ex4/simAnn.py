@@ -15,7 +15,7 @@ def getStartSolution(n,k):
     
 def getScore(solution,k):
     n = len(solution)
-    score = 0
+    score = 0.0
     for col in range(n):
         eggs = 0
         for row in range(n):
@@ -70,7 +70,7 @@ def getScore(solution,k):
             colTemp -= 1
         if eggs <= k:
             score += 1
-    return score  
+    return score*100/(3+(n-1)*5) 
 
 def getNeighbours(this):
 	#Find the part with the most issues
