@@ -135,6 +135,32 @@ def findBestSolution(solutions):
 			bestSolution = solution
 	return solution
 
+def getNextSolution(P, PMax, T):
+	#8. Let q = F (Pmax)-F (P )F (P )
+	PMaxScore = getScore(PMax)
+	PScore = getScore(P)
+	q = (PMaxScore-PScore)/PScore
+
+	#9. Let p = min [1, e-qT ]
+	cooling = exp(-q/T)
+	if cooling < 1:
+		p = cooling
+	else:
+		p = 1
+
+	#10. Generate x, a random real number in the closed range [0,1].
+	x=rand()
+
+	#11. If x > p then P ? Pmax ;; ( Exploiting )
+	if(x > p):
+		this = PMax 
+
+	#12. else P ? a random choice among the n neighbors. ;; (Exploring)
+	else:
+		this = n[rand()*len(n)]
+	#13. T ? T - dT
+	T = T - T_Step
+
 def printSolution(matrix):
     N = len(matrix)
     for row in range(N):
