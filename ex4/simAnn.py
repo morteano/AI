@@ -1,46 +1,5 @@
 from random import randrange
 
-T_max = 100
-T_step = 1
-F_Target = 0
-#1. Begin at a start point P (either user-selected or randomly-generated).
-this = getStartSolution()
-
-#2. Set the temperature, T, to it's starting value: Tmax
-T = T_max
-
-#4. If F(P) = Ftarget then EXIT and return P as the solution; else continue.
-while(getScore(this) < F_target):
-
-	#5. Generate n neighbors of P in the search space: (P1, P2, ..., Pn).
-	neighbours=getNeighbours(this)
-
-	#6. Evaluate each neighbor, yielding (F(P1), F(P2), ..., F(Pn)).
-	#7. Let Pmax be the neighbor with the highest evaluation.
-	pMax=findBestSolution(neighbours)
-
-	#8. Let q = F (Pmax)-F (P )F (P )
-#	q=getQ(pMax,this)
-
-	#9. Let p = min [1, e-qT ]
-#	candidateScore=getp(q, Temp)
-
-	#10. Generate x, a random real number in the closed range [0,1].
-#	x=rand()
-
-	#11. If x > p then P ? Pmax ;; ( Exploiting )
-#	if(x > candidateScore):
-#		this = pMax 
-
-	#12. else P ? a random choice among the n neighbors. ;; (Exploring)
-#	else:
-#		this = n[rand()*len(n)]
-	#13. T ? T - dT
-#	T=T-T_Step
-# print solution
-#printSolution()
-#printStats()
-
 def getStartSolution(n,k):
     solution = []
     for i in range(n):
@@ -127,7 +86,7 @@ def getScores(list):
 
 def findBestSolution(solutions):
 	maxScore = 0
-	bestSolution =
+	bestSolution = solution[0]
 	for solution in solutions:
 		thisScore = getScore(solution, k)
 		if thisScore > maxScore:
@@ -169,11 +128,51 @@ def printSolution(matrix):
             line += str(matrix[row][col]) + " "
         print line
 
+T_max = 100
+T_step = 1
+F_target = 0
 n = 4
 k = 2
-solution = getStartSolution(n,k)
-printSolution(solution)
-print getScore(solution,k)
+#1. Begin at a start point P (either user-selected or randomly-generated).
+this = getStartSolution(n,k)
+
+#2. Set the temperature, T, to it's starting value: Tmax
+T = T_max
+
+#4. If F(P) = Ftarget then EXIT and return P as the solution; else continue.
+while(getScore(this,k) < F_target):
+
+	#5. Generate n neighbors of P in the search space: (P1, P2, ..., Pn).
+	neighbours=getNeighbours(this)
+
+	#6. Evaluate each neighbor, yielding (F(P1), F(P2), ..., F(Pn)).
+	#7. Let Pmax be the neighbor with the highest evaluation.
+	pMax=findBestSolution(neighbours)
+
+	#8. Let q = F (Pmax)-F (P )F (P )
+#	q=getQ(pMax,this)
+
+	#9. Let p = min [1, e-qT ]
+#	candidateScore=getp(q, Temp)
+
+	#10. Generate x, a random real number in the closed range [0,1].
+#	x=rand()
+
+	#11. If x > p then P ? Pmax ;; ( Exploiting )
+#	if(x > candidateScore):
+#		this = pMax 
+
+	#12. else P ? a random choice among the n neighbors. ;; (Exploring)
+#	else:
+#		this = n[rand()*len(n)]
+	#13. T ? T - dT
+#	T=T-T_Step
+# print solution
+#printSolution()
+#printStats()
+
+printSolution(this)
+print getScore(this,k)
 
 
 
