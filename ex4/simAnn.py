@@ -66,10 +66,8 @@ def getScore(solution,k):
             eggs += solution[row][col]
         if eggs <= k:
             score += 1
-    print "Score after row:"
-    print score
     
-# Check diagonal for lower triangular matrix    
+    # Check diagonal for lower triangular matrix    
     for row in range(n):
         eggs = 0
         rowTemp = row
@@ -80,10 +78,8 @@ def getScore(solution,k):
             colTemp += 1
         if eggs <= k:
             score += 1
-    print "Score after diag1:"
-    print score
             
-# Check diagonal for upper triangular matrix            
+    # Check diagonal for upper triangular matrix            
     for col in range(1,n):
         eggs = 0
         rowTemp = 0
@@ -94,8 +90,30 @@ def getScore(solution,k):
             colTemp += 1
         if eggs <= k:
             score += 1
-    print "Score after diag2:"
-    print score
+
+    # Check diagonal for lower triangular matrix    
+    for row in range(n):
+        eggs = 0
+        rowTemp = row
+        colTemp = n-1
+        while rowTemp >= 0 and colTemp >= 0:
+            eggs += solution[rowTemp][colTemp]
+            rowTemp -= 1
+            colTemp -= 1
+        if eggs <= k:
+            score += 1
+            
+    # Check diagonal for upper triangular matrix            
+    for col in range(1,n):
+        eggs = 0
+        rowTemp = n-1
+        colTemp = col
+        while rowTemp >= 0 and colTemp >= 0:
+            eggs += solution[rowTemp][colTemp]
+            rowTemp -= 1
+            colTemp -= 1
+        if eggs <= k:
+            score += 1
     return score  
 
 def getNeighbours(this):
