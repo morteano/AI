@@ -1,5 +1,8 @@
+from random import random
 from random import randrange
 from copy import deepcopy
+from math import exp
+from math import floor
 
 def getStartSolution(n,k):
     solution = []
@@ -66,36 +69,45 @@ def getNeighbours(x,y,solution):
     
     #  Create neighbourhood for this solution    
     neighbourhood = []
-    
+    print "inside getNeighbours"
     # Only add existing neighbours to the neigbourhood
     if x is not 0:
+        print "inside x not 0"
         neighbour = deepcopy(solution)
         if neighbour[x-1][y] == 0:
+            print "appending"
             neighbour[x][y] = 0
             neighbour[x-1][y] = 1
             neighbourhood.append(neighbour)
               
     if x is not nMax:
+       print "inside x not max"
        neighbour = deepcopy(solution)
        if neighbour[x+1][y] == 0:
+            print "appending"
             neighbour[x][y] = 0
             neighbour[x+1][y] = 1
             neighbourhood.append(neighbour)
           
     if y is not 0:
+        print "inside y not 0"
         neighbour = deepcopy(solution)
         if neighbour[x][y-1] == 0:
+            print "appending"
             neighbour[x][y] = 0
             neighbour[x][y-1] = 1
             neighbourhood.append(neighbour)
           
     if y is not nMax:
+        print "inside y not max"
         neighbour = deepcopy(solution)
         if neighbour[x][y+1] == 0:
+            print "appending"
             neighbour[x][y] = 0
             neighbour[x][y+1] = 1
             neighbourhood.append(neighbour)
-        
+    print "Neighbourhood"
+    print neighbourhood
 	return neighbourhood
 
 def getScores(list):
@@ -104,9 +116,10 @@ def getScores(list):
 		scores.append(getScore(solution,k))
 	return scores
 
-def findBestSolution(solutions):
+def findBestSolution(solutions, k):
 	maxScore = 0
-	bestSolution = solution[0]
+	print solutions
+	bestSolution = solutions[0]
 	for solution in solutions:
 		thisScore = getScore(solution, k)
 		if thisScore > maxScore:
@@ -114,10 +127,10 @@ def findBestSolution(solutions):
 			bestSolution = solution
 	return solution
 
-def getNextSolution(P, PMax, T):
+def getNextSolution(P, PMax, T, k, n):
 	#8. Let q = (F(Pmax)-F(P))/F(P)
-	PMaxScore = getScore(PMax)
-	PScore = getScore(P)
+	PMaxScore = getScore(PMax, k)
+	PScore = getScore(P, k)
 	q = (PMaxScore-PScore)/PScore
 
 	#9. Let p = min [1, e^(-q/T) ]
@@ -128,7 +141,7 @@ def getNextSolution(P, PMax, T):
 		p = 1
 
 	#10. Generate x, a random real number in the closed range [0,1].
-	x=rand()
+	x=random()
 
 	#11. If x > p then P ? Pmax ;; ( Exploiting )
 	if(x > p):
@@ -136,7 +149,7 @@ def getNextSolution(P, PMax, T):
 
 	#12. else P ? a random choice among the n neighbors. ;; (Exploring)
 	else:
-		nextSolution = n[rand()*len(n)]
+		nextSolution = n[int(random()*len(n))]
 
 	return nextSolution
 
@@ -148,45 +161,60 @@ def printSolution(matrix):
             line += str(matrix[row][col]) + " "
         print line
 
+########################### For testing #######################
+def test():
+  test1 = [1,0,1]
+  test2 = [1,1,0]
+  test3 = [0,1,1]
+  test=[]
+  test.append(test1)
+  test.append(test2)
+  test.append(test3)
+  return test
+################################################################
+
+
 T_max = 100
 T_step = 1
-F_target = 0
+F_target = 100
 n = 3
 k = 2
 #1. Begin at a start point P (either user-selected or randomly-generated).
 this = getStartSolution(n,k)
-
+this = test()                                                                     #####################Testing##############
 #2. Set the temperature, T, to it's starting value: Tmax
 T = T_max
 
 #4. If F(P) = Ftarget then EXIT and return P as the solution; else continue.
 while(getScore(this,k) < F_target):
 
+  x=int(n*random())
+  y=int(n*random())
+  while(this[x][y] == 0):
+    x = int(n*random())
+    y = int(n*random())
+  print "x and y: "
+  print x
+  print y
+  printSolution(this)
 	#5. Generate n neighbors of P in the search space: (P1, P2, ..., Pn).
-	neighbours=getNeighbours(this)
+  neighbours=getNeighbours(x,y,this)
 
 	#6. Evaluate each neighbor, yielding (F(P1), F(P2), ..., F(Pn)).
 	#7. Let Pmax be the neighbor with the highest evaluation.
-	PMax=findBestSolution(neighbours)
+  PMax=findBestSolution(neighbours, k)
 
 	#8-12
-	this = getNextSolution(this, PMax, T)
+  this = getNextSolution(this, PMax, T, k, neighbours)
 
 	#13. T = T - dT
-	T=T-T_Step
+  T=T-T_step
 	# print solution
-	printSolution(this)
+  print "Candidate"
+  printSolution(this)
+  print getScore(this,k)
 	
 #printStats()
-
-#test1 = [1,0,1]
-#test2 = [1,1,0]
-#test3 = [0,1,1]
-#test=[]
-#test.append(test1)
-#test.append(test2)
-#test.append(test3)
-#this = test
 
 
 printSolution(this)
