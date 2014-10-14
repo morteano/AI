@@ -3,6 +3,7 @@ from random import randrange
 from copy import deepcopy
 from math import exp
 from math import floor
+from time import sleep
 
 def getStartSolution(n,k):
     solution = []
@@ -60,11 +61,19 @@ def getScore(solution, k):
 
     # Give credit when credit is due
     for scorePartial in scoresPartial:
+        # Award for each partial without too many eggs
         if (sum(scorePartial) <= k) and (len(scorePartial) > 0):
             score += 1
-
+        # Punish for each extra egg in a partial
+        elif (sum(scorePartial) > k):
+            extraEggs = sum(scorePartial)-k
+            score -= extraEggs
+    
+    # Perfect score
+    perfectScore = (4+(n-1)*6)
+    
     # Print score in percent of maximum score
-    return (score/(4+(n-1)*6)*100)
+    return (score/perfectScore*100)
 
 def getNeighbours(x,y,solution):
     #Create the neighbours
@@ -172,7 +181,39 @@ def printSolution(matrix):
 def printStats():
     print "stepCounter:"
     print stepCounter
+    
+def mostTroublingNode(matrix, n, k):
+    mostTroubles = 0
+    for rad in range(n):
+        for col in range(n):
+            if matrix[rad][col] == 1:
+                troubles = 0
+                eggs = 0
+                for line in matrix:
+                    eggs += line[col]
+                if eggs > k:
+                    troubles += 1
+                if sum(matrix[rad]) > k:
+                    troubles += 1
+                if sum(getDiagIncrease(rad, col, matrix, n)) > k:
+                    troubles += 1
+                if sum(getDiagDecrease(rad, col, matrix, n)) > k:
+                    troubles += 1
+                
+                if troubles > mostTroubles:
+                    mostTroubles = troubles
+                    troubledX = rad
+                    troubledY = col
+    return (troubledX,troubledY)
 
+def randomXY(this, n):
+    x=int(n*random())
+    y=int(n*random())
+    while(this[x][y] == 0):
+        x = int(n*random())
+        y = int(n*random())
+    return (x,y)
+    
 ########################### For testing #######################
 def test():
     test1 = [1,0,1]
@@ -190,8 +231,9 @@ T_max = 100
 T_step = 0.1
 F_target = 100
 stepCounter = 0
-n = 3
+n = 4
 k = 2
+
 #1. Begin at a start point P (either user-selected or randomly-generated).
 this = getStartSolution(n,k)
 #this = test()                                                                     #####################Testing##############
@@ -201,15 +243,13 @@ T = T_max
 #4. If F(P) = Ftarget then EXIT and return P as the solution; else continue.
 while(getScore(this,k) < F_target) and (T > 0):
 
-    x=int(n*random())
-    y=int(n*random())
-    while(this[x][y] == 0):
-        x = int(n*random())
-        y = int(n*random())
-    #print "x and y: "
-    #print x
-    #print y
+    (x,y) = randomXY(this, n)
+    #(x,y) = mostTroublingNode(this, n, k)
+    
+    #print (x,y)
     #printSolution(this)
+    #sleep(3)
+
     #5. Generate n neighbors of P in the search space: (P1, P2, ..., Pn).
     neighbours=getNeighbours(x,y,this)
 
@@ -234,11 +274,4 @@ while(getScore(this,k) < F_target) and (T > 0):
 printStats()
 printSolution(this)
 print getScore(this,k)
-
-
-
-
-
-
-
 
