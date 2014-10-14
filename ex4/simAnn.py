@@ -18,21 +18,21 @@ def getStartSolution(n,k):
     return solution
 
 def getDiagDecrease(row, col, matrix, n):
-	list = []
-	while row < n and col < n:
-		list.append(matrix[row][col])
-		row+=1
-		col+=1
-	return list
+  list = []
+  while row < n and col < n:
+    list.append(matrix[row][col])
+    row+=1
+    col+=1
+  return list
 
 def getDiagIncrease(row, col, matrix, n):
-	list = []
-	while (row < n) and (col >= 0):
+  list = []
+  while (row < n) and (col >= 0):
             #    print j
-		list.append(matrix[row][col])
-		row+=1
-		col-=1
-	return list
+    list.append(matrix[row][col])
+    row+=1
+    col-=1
+  return list
 
 def getScore(solution, k):
     scoresPartial = []
@@ -40,21 +40,21 @@ def getScore(solution, k):
     n = len(solution)
     for i in range(n):
         #add row
-		scoresPartial.append(solution[i])
-		
-		#add col
-		col = []
-		for j in range(n):
+    scoresPartial.append(solution[i])
+    
+    #add col
+    col = []
+    for j in range(n):
                     col.append(solution[j][i])
-		scoresPartial.append(col)
+    scoresPartial.append(col)
 
         #add diagonals
-		scoresPartial.append(getDiagDecrease(0,i,solution,n))
-		scoresPartial.append(getDiagDecrease(i+1,0,solution,n))
+    scoresPartial.append(getDiagDecrease(0,i,solution,n))
+    scoresPartial.append(getDiagDecrease(i+1,0,solution,n))
 
-		scoresPartial.append(getDiagIncrease(i,n-1,solution,n))
-		scoresPartial.append(getDiagIncrease(0,i-1,solution,n))
-		    
+    scoresPartial.append(getDiagIncrease(i,n-1,solution,n))
+    scoresPartial.append(getDiagIncrease(0,i-1,solution,n))
+        
     for scorePartial in scoresPartial:
                 if (sum(scorePartial) <= k) and (len(scorePartial) > 0):
                     score += 1
@@ -62,7 +62,7 @@ def getScore(solution, k):
     return (score/(4+(n-1)*6)*100)
 
 def getNeighbours(x,y,solution):
-	#Create the neighbours
+  #Create the neighbours
     
     # Define boundries
     nMax = len(solution)-1
@@ -106,52 +106,53 @@ def getNeighbours(x,y,solution):
             neighbour[x][y] = 0
             neighbour[x][y+1] = 1
             neighbourhood.append(neighbour)
+    
     print "Neighbourhood"
     print neighbourhood
-	return neighbourhood
+    return neighbourhood
 
 def getScores(list):
-	scores = []
-	for solution in list:
-		scores.append(getScore(solution,k))
-	return scores
+  scores = []
+  for solution in list:
+    scores.append(getScore(solution,k))
+  return scores
 
 def findBestSolution(solutions, k):
-	maxScore = 0
-	print solutions
-	bestSolution = solutions[0]
-	for solution in solutions:
-		thisScore = getScore(solution, k)
-		if thisScore > maxScore:
-			maxScore = thisScore
-			bestSolution = solution
-	return solution
+  maxScore = 0
+  print solutions
+  bestSolution = solutions[0]
+  for solution in solutions:
+    thisScore = getScore(solution, k)
+    if thisScore > maxScore:
+      maxScore = thisScore
+      bestSolution = solution
+  return solution
 
 def getNextSolution(P, PMax, T, k, n):
-	#8. Let q = (F(Pmax)-F(P))/F(P)
-	PMaxScore = getScore(PMax, k)
-	PScore = getScore(P, k)
-	q = (PMaxScore-PScore)/PScore
+  #8. Let q = (F(Pmax)-F(P))/F(P)
+  PMaxScore = getScore(PMax, k)
+  PScore = getScore(P, k)
+  q = (PMaxScore-PScore)/PScore
 
-	#9. Let p = min [1, e^(-q/T) ]
-	cooling = exp(-q/T)
-	if cooling < 1:
-		p = cooling
-	else:
-		p = 1
+  #9. Let p = min [1, e^(-q/T) ]
+  cooling = exp(-q/T)
+  if cooling < 1:
+    p = cooling
+  else:
+    p = 1
 
-	#10. Generate x, a random real number in the closed range [0,1].
-	x=random()
+  #10. Generate x, a random real number in the closed range [0,1].
+  x=random()
 
-	#11. If x > p then P ? Pmax ;; ( Exploiting )
-	if(x > p):
-		nextSolution = PMax 
+  #11. If x > p then P ? Pmax ;; ( Exploiting )
+  if(x > p):
+    nextSolution = PMax 
 
-	#12. else P ? a random choice among the n neighbors. ;; (Exploring)
-	else:
-		nextSolution = n[int(random()*len(n))]
+  #12. else P ? a random choice among the n neighbors. ;; (Exploring)
+  else:
+    nextSolution = n[int(random()*len(n))]
 
-	return nextSolution
+  return nextSolution
 
 def printSolution(matrix):
     N = len(matrix)
@@ -197,23 +198,23 @@ while(getScore(this,k) < F_target):
   print x
   print y
   printSolution(this)
-	#5. Generate n neighbors of P in the search space: (P1, P2, ..., Pn).
+  #5. Generate n neighbors of P in the search space: (P1, P2, ..., Pn).
   neighbours=getNeighbours(x,y,this)
 
-	#6. Evaluate each neighbor, yielding (F(P1), F(P2), ..., F(Pn)).
-	#7. Let Pmax be the neighbor with the highest evaluation.
+  #6. Evaluate each neighbor, yielding (F(P1), F(P2), ..., F(Pn)).
+  #7. Let Pmax be the neighbor with the highest evaluation.
   PMax=findBestSolution(neighbours, k)
 
-	#8-12
+  #8-12
   this = getNextSolution(this, PMax, T, k, neighbours)
 
-	#13. T = T - dT
+  #13. T = T - dT
   T=T-T_step
-	# print solution
+  # print solution
   print "Candidate"
   printSolution(this)
   print getScore(this,k)
-	
+  
 #printStats()
 
 
