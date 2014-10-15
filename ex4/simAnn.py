@@ -5,7 +5,8 @@ from math import exp
 from math import floor
 from time import sleep
 
-def getStartSolution(n,k):
+# Add k eggs in each row
+def getStartSolutionByRows(n,k):
     solution = []
     for i in range(n):
         solution.append([0]*n)
@@ -18,6 +19,21 @@ def getStartSolution(n,k):
                 eggsPlaced += 1
     return solution
 
+# Add n*k eggs randomly in the carton
+def getStartSolution(n,k):
+    solution = []
+    for i in range(n):
+        solution.append([0]*n)
+    eggsPlaced = 0
+    while eggsPlaced < k*n:
+        x = int(random()*n)
+        y = int(random()*n)
+        if solution[x][y] == 0:
+            solution[x][y] = 1
+            eggsPlaced += 1
+    return solution
+
+# Return the diagonal going south east, and consisting of the element with coordinates row, col
 def getDiagDecrease(row, col, matrix, n):
     list = []
     while row < n and col < n:
@@ -26,6 +42,7 @@ def getDiagDecrease(row, col, matrix, n):
         col+=1
     return list
 
+# Return the diagonal going south west, and consisting of the element with coordinates row, col
 def getDiagIncrease(row, col, matrix, n):
     list = []
     while (row < n) and (col >= 0):
@@ -72,9 +89,9 @@ def getScore(solution, k):
     # Perfect score
     perfectScore = (4+(n-1)*6)
     
-    # Print score in percent of maximum score
+    # Return score in percent of maximum score
     return (score/perfectScore*100)
-
+    
 def getNeighbours(x,y,solution):
     #Create the neighbours
 
@@ -126,15 +143,8 @@ def getNeighbours(x,y,solution):
     #print neighbourhood
     return neighbourhood
 
-def getScores(list):
-    scores = []
-    for solution in list:
-        scores.append(getScore(solution,k))
-    return scores
-
 def findBestSolution(solutions, k):
     maxScore = 0
-    #print solutions
     bestSolution = solutions[0]
     for solution in solutions:
         thisScore = getScore(solution, k)
@@ -228,10 +238,10 @@ def test():
 
 
 T_max = 100
-T_step = 0.1
+T_step = 0.01
 F_target = 100
 stepCounter = 0
-n = 4
+n = 5
 k = 2
 
 #1. Begin at a start point P (either user-selected or randomly-generated).
@@ -274,4 +284,11 @@ while(getScore(this,k) < F_target) and (T > 0):
 printStats()
 printSolution(this)
 print getScore(this,k)
+
+
+
+
+
+
+
 
