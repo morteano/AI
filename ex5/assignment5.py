@@ -111,6 +111,21 @@ class CSP:
         """
         # TODO: IMPLEMENT THIS
         pass
+        if assignment is complete:
+            return assignment
+        else:
+            var = SELECT-UNASSIGNED-VARIABLE(csp)
+            for value in ORDER-DOMAIN-VALUES(var, assignment, csp):
+                assignment.append(var=value)
+                inferences = INFERENCE(csp, var, value)
+                if inferences is not failure:
+                    assignment.append(inferences)
+                    result = BACKTRACK(assignment, csp)
+                    if result is not fauilure:
+                        return result
+                assignment.pop(var=value)
+                assignment.pop(inferences)
+            return failure
 
     def select_unassigned_variable(self, assignment):
         """The function 'Select-Unassigned-Variable' from the pseudocode
@@ -141,6 +156,9 @@ class CSP:
         """
         # TODO: IMPLEMENT THIS
         pass
+        revised = false
+        for x in D_i:
+            if
 
 def create_map_coloring_csp():
     """Instantiate a CSP representing the map coloring problem from the
@@ -200,3 +218,12 @@ def print_sudoku_solution(solution):
         print
         if row == 2 or row == 5:
             print '------+-------+------'
+
+
+def main():
+    csp = create_sudoku_csp("easy.txt")
+    print csp.domains
+    print len(csp.domains.values()[0])
+
+if __name__ == "__main__":
+    main()
