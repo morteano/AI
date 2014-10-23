@@ -112,7 +112,7 @@ class CSP:
         # TODO: IMPLEMENT THIS
         # Check if all variables have been assigned values
         complete = True
-        for var in assignment.values:
+        for var in assignment.values():
             if len(var)> 1:
                 complete = False
                 break
@@ -121,18 +121,19 @@ class CSP:
 
         # If not keep assigning values
         else:
-            var = select_unassigned_variable(csp)
-            for value in ORDER-DOMAIN-VALUES(var, assignment, csp):
-                assignment.append(var=value)
+            var = self.select_unassigned_variable(assignment)
+            for value in self.ORDER-DOMAIN-VALUES(var, assignment):
+                assignment_mutable = deepcopy(assignment)
+                assignment_mutable[var].append(value)
                 inferences = inference(csp, var, value)
                 if inferences is not failure:
-                    assignment.append(inferences)
-                    result = backtrack(assignment, csp)
-                    if result is not fauilure:
+                    assignment_mutable.append(inferences)
+                    result = backtrack(assignment_mutable, csp)
+                    if result is not False:
                         return result
-                assignment.pop(var=value)
-                assignment.pop(inferences)
-            return failure
+                assignment_mutable[var].pop(value)
+                assignment_mutable.pop(inferences)
+            return False
 
     def select_unassigned_variable(self, assignment):
         """The function 'Select-Unassigned-Variable' from the pseudocode
@@ -142,12 +143,13 @@ class CSP:
         """
         # TODO: IMPLEMENT THIS
         # Use minumum-remaining-values (MRV)
-        min = 10
-        for (var, domain) in assignment:
+        minimum = 10
+        for key in assignment.keys():
+            domain = assignment[key]
             domain_size = len(domain)
             # find the variable with the smallest non-zero domain
-            if (domain_size > 0) and (domain_size < min):
-                MRV = var
+            if (domain_size > 0) and (domain_size < minimum):
+                MRV = key
 
         return MRV
 
@@ -262,7 +264,9 @@ def print_sudoku_solution(solution):
 def main():
     csp = create_sudoku_csp("easy.txt")
     print csp.domains
+    print csp.domains.values()
     print len(csp.domains.values()[0])
+    #csp.backtracking_search()
 
 if __name__ == "__main__":
     main()
