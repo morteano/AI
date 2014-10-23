@@ -150,7 +150,19 @@ class CSP:
         is the initial queue of arcs that should be visited.
         """
         # TODO: IMPLEMENT THIS
-        pass
+        while not queue:
+            (x_i, x_j) = queue.pop()
+            # Try to make the variables arc consistent
+            if self.revise(assignment, x_i, x_j):
+                # Check if solution is still possible
+                if not assignment[x_i]:
+                    #if no assignments are possible, the solution is unsatisfiable
+                    return False
+                # else, add all new constraints to the queue
+                else:
+                    for (x_k , _) in self.get_all_neighboring_arcs(x_i):
+                        queue.append(x_k, x_i)
+        return True
 
     def revise(self, assignment, i, j):
         """The function 'Revise' from the pseudocode in the textbook.
@@ -162,12 +174,21 @@ class CSP:
         legal values in 'assignment'.
         """
         # TODO: IMPLEMENT THIS
-        pass
         revised = False
-        for x in D_i:
-            #if no value y in D_j allows (x,y) to satisfy the constraint between X_i and X_j:
-            #    delete x from D_i
+        index = 0
+        # Check each possible var state in the domain of var i
+        for x_i in assignment(i):
+            satisfied = False
+            # Crosscheck this x_i value with the possible j values
+            for x_j in assignment(j):
+                if x_i != x_j:
+                    #If the domain of j is not empty nor equal to x_i, it is satisfiable
+                    satisfied = True
+            # if there are no possible vars for j, remove the x_i value from i's domain
+            if not satisfied:
+                assignment(i).pop(index)
                 revised = True
+            index += 1
         return revised
 
 def create_map_coloring_csp():
