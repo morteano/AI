@@ -125,12 +125,12 @@ class CSP:
             for value in self.ORDER-DOMAIN-VALUES(var, assignment):
                 assignment_mutable = deepcopy(assignment)
                 assignment_mutable[var].append(value)
-                inferences = inference(assignment_mutable, self.get_all_neighboring_arcs(var))
-                if inferences is not failure:
-                    result = backtrack(assignment_mutable, csp)
+                inferences = self.inference(assignment_mutable, self.get_all_neighboring_arcs(var))
+                if inferences is not False:
+                    result = self.backtrack(assignment_mutable)
                     if result is not False:
                         return result
-                assignment_mutable[var].pop(value)
+                #assignment_mutable[var].pop(value)
             return False
 
     def select_unassigned_variable(self, assignment):
@@ -264,7 +264,7 @@ def main():
     print csp.domains
     print csp.domains.values()
     print len(csp.domains.values()[0])
-    #csp.backtracking_search()
+    csp.backtracking_search()
 
 if __name__ == "__main__":
     main()
