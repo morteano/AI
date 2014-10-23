@@ -146,7 +146,7 @@ class CSP:
         for (var, domain) in assignment:
             domain_size = len(domain)
             # find the variable with the smallest non-zero domain
-            if (domain_size > 0) && (domain_size < min):
+            if (domain_size > 0) and (domain_size < min):
                 MRV = var
 
         return MRV
