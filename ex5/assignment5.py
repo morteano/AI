@@ -141,7 +141,15 @@ class CSP:
         of legal values has a length greater than one.
         """
         # TODO: IMPLEMENT THIS
-        pass
+        # Use minumum-remaining-values (MRV)
+        min = 10
+        for (var, domain) in assignment:
+            domain_size = len(domain)
+            # find the variable with the smallest non-zero domain
+            if (domain_size > 0) && (domain_size < min):
+                MRV = var
+
+        return MRV
 
     def inference(self, assignment, queue):
         """The function 'AC-3' from the pseudocode in the textbook.
