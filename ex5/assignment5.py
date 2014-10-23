@@ -110,17 +110,24 @@ class CSP:
         iterations of the loop.
         """
         # TODO: IMPLEMENT THIS
-        pass
-        if assignment is complete:
+        # Check if all variables have been assigned values
+        complete = True
+        for var in assignment.values:
+            if len(var)> 1:
+                complete = False
+                break
+        if complete:
             return assignment
+
+        # If not keep assigning values
         else:
-            var = SELECT-UNASSIGNED-VARIABLE(csp)
+            var = select_unassigned_variable(csp)
             for value in ORDER-DOMAIN-VALUES(var, assignment, csp):
                 assignment.append(var=value)
-                inferences = INFERENCE(csp, var, value)
+                inferences = inference(csp, var, value)
                 if inferences is not failure:
                     assignment.append(inferences)
-                    result = BACKTRACK(assignment, csp)
+                    result = backtrack(assignment, csp)
                     if result is not fauilure:
                         return result
                 assignment.pop(var=value)
@@ -156,9 +163,12 @@ class CSP:
         """
         # TODO: IMPLEMENT THIS
         pass
-        revised = false
+        revised = False
         for x in D_i:
-            if
+            #if no value y in D_j allows (x,y) to satisfy the constraint between X_i and X_j:
+            #    delete x from D_i
+                revised = True
+        return revised
 
 def create_map_coloring_csp():
     """Instantiate a CSP representing the map coloring problem from the
