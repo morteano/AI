@@ -1,7 +1,11 @@
 #!/usr/bin/python
 
-import copy
+from copy import deepcopy
 import itertools
+
+backtrack_calls = 0
+backtrack_failures = 0
+
 
 class CSP:
     def __init__(self):
@@ -76,7 +80,7 @@ class CSP:
         # domains of the CSP variables. The deep copy is required to
         # ensure that any changes made to 'assignment' does not have any
         # side effects elsewhere.
-        assignment = copy.deepcopy(self.domains)
+        assignment = deepcopy(self.domains)
 
         # Run AC-3 on all constraints in the CSP, to weed out all of the
         # values that are not arc-consistent to begin with
@@ -109,11 +113,12 @@ class CSP:
         assignments and inferences that took place in previous
         iterations of the loop.
         """
-        # TODO: IMPLEMENT THIS
-        # Check if all variables have been assigned values
+        # Return if all variables have been assigned values
         complete = True
+        global backtrack_calls
+        backtrack_calls += 1
         for var in assignment.values():
-            if len(var)> 1:
+            if len(var) > 1:
                 complete = False
                 break
         if complete:
@@ -122,15 +127,21 @@ class CSP:
         # If not keep assigning values
         else:
             var = self.select_unassigned_variable(assignment)
-            for value in self.ORDER-DOMAIN-VALUES(var, assignment):
+            for value in assignment[var]:
                 assignment_mutable = deepcopy(assignment)
-                assignment_mutable[var].append(value)
-                inferences = inference(assignment_mutable, self.get_all_neighboring_arcs(var))
-                if inferences is not failure:
-                    result = backtrack(assignment_mutable, csp)
+
+                # Assign the value to the variable by deleting all other possibilities
+                assignment_mutable.pop(var, None)
+                assignment_mutable[var] = [value]
+
+                # Make the graph arch consistent
+                inferences = self.inference(assignment_mutable, self.get_all_neighboring_arcs(var))
+                if inferences is not False:
+                    result = self.backtrack(assignment_mutable)
                     if result is not False:
                         return result
-                assignment_mutable[var].pop(value)
+            global backtrack_failures
+            backtrack_failures += 1
             return False
 
     def select_unassigned_variable(self, assignment):
@@ -146,9 +157,8 @@ class CSP:
             domain = assignment[key]
             domain_size = len(domain)
             # find the variable with the smallest non-zero domain
-            if (domain_size > 0) and (domain_size < minimum):
+            if (domain_size > 1) and (domain_size < minimum):
                 MRV = key
-
         return MRV
 
     def inference(self, assignment, queue):
@@ -157,8 +167,7 @@ class CSP:
         the lists of legal values for each undecided variable. 'queue'
         is the initial queue of arcs that should be visited.
         """
-        # TODO: IMPLEMENT THIS
-        while not queue:
+        while queue:
             (x_i, x_j) = queue.pop()
             # Try to make the variables arc consistent
             if self.revise(assignment, x_i, x_j):
@@ -168,8 +177,8 @@ class CSP:
                     return False
                 # else, add all new constraints to the queue
                 else:
-                    for (x_k , _) in self.get_all_neighboring_arcs(x_i):
-                        queue.append(x_k, x_i)
+                    for (x_k, _) in self.get_all_neighboring_arcs(x_i):
+                        queue.append((x_k, x_i))
         return True
 
     def revise(self, assignment, i, j):
@@ -181,20 +190,20 @@ class CSP:
         between i and j, the value should be deleted from i's list of
         legal values in 'assignment'.
         """
-        # TODO: IMPLEMENT THIS
         revised = False
         index = 0
-        # Check each possible var state in the domain of var i
-        for x_i in assignment(i):
+        # Check each possible values in the domain of var i
+        for x_i in assignment[i]:
             satisfied = False
             # Crosscheck this x_i value with the possible j values
-            for x_j in assignment(j):
+            for x_j in assignment[j]:
                 if x_i != x_j:
                     #If the domain of j is not empty nor equal to x_i, it is satisfiable
                     satisfied = True
-            # if there are no possible vars for j, remove the x_i value from i's domain
+            # if there are no possible values (x_j) for j, remove the x_i value from i's domain
             if not satisfied:
-                assignment(i).pop(index)
+                assignment[i].pop(index)
+                index -= 1
                 revised = True
             index += 1
         return revised
@@ -258,13 +267,37 @@ def print_sudoku_solution(solution):
         if row == 2 or row == 5:
             print '------+-------+------'
 
+def print_sudoku_board(board):
+    """Convert the representation of a Sudoku solution as returned from
+    the method CSP.backtracking_search(), into a human readable
+    representation.
+    """
+    for row in range(9):
+        for col in range(9):
+            if len(board['%d-%d' % (row, col)]) == 1:
+                print board['%d-%d' % (row, col)][0],
+            else:
+                print " ",
+            if col == 2 or col == 5:
+                print '|',
+        print
+        if row == 2 or row == 5:
+            print '------+-------+------'
+    print " "
 
 def main():
-    csp = create_sudoku_csp("easy.txt")
-    print csp.domains
-    print csp.domains.values()
-    print len(csp.domains.values()[0])
-    #csp.backtracking_search()
+    csp = create_sudoku_csp("veryhard.txt")
+
+    # Print initial board
+    print_sudoku_board(csp.domains)
+    solution = csp.backtracking_search()
+
+    # Print solution
+    print_sudoku_solution(solution)
+    print "\nNumber of backtrack calls:"
+    print backtrack_calls
+    print "\nNumber of times backtrack returned false"
+    print backtrack_failures
 
 if __name__ == "__main__":
     main()
