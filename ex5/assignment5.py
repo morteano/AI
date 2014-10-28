@@ -150,7 +150,6 @@ class CSP:
         in 'assignment' that have not yet been decided, i.e. whose list
         of legal values has a length greater than one.
         """
-        # TODO: IMPLEMENT THIS
         # Use minumum-remaining-values (MRV)
         minimum = 10
         for key in assignment.keys():
