@@ -127,10 +127,13 @@ class NN: # Neural Network
         # TODO: Train the network on all patterns for a number of iterations.
         # To measure performance each iteration: Run for 1 iteration, then count misordered pairs.
         # TODO: Training is done  like this (details in exercise text):
-        # -Propagate A
-        # -Propagate B
-        # -Backpropagate
-        pass
+        for it in range(iterations):
+            for pair in patterns:
+                A = pair[0];
+                B = pair[1];
+                self.propagate(A)
+                self.propagate(B)
+                self.backpropagate()
 
     def countMisorderedPairs(self, patterns):
         # TODO: Let the network classify all pairs of patterns. The highest output determines the winner.
