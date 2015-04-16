@@ -62,12 +62,24 @@ def runRanker(trainingset, testset):
         dataInstance = dhTraining.dataset[qid]  # All data instances (query, features, rating) for query qid
         # TODO: Store the training instances into the trainingPatterns array. Remember to store them as pairs, where the first item is rated higher than the second.
         # TODO: Hint: A good first step to get the pair ordering right, is to sort the instances based on their rating for this query. (sort by x.rating for each x in dataInstance)
+        for firstData in range(len(dataInstance)):
+            for secondData in range(firstData+1, len(dataInstance)):
+                if dataInstance[firstData].rating > dataInstance[secondData].rating:
+                    trainingPatterns.append((dataInstance[firstData].features, dataInstance[secondData].features))
+                elif dataInstance[firstData].rating < dataInstance[secondData].rating:
+                    trainingPatterns.append((dataInstance[secondData].features, dataInstance[firstData].features))
 
     for qid in dhTesting.dataset.keys():
         # This iterates through every query ID in our test set
         dataInstance = dhTesting.dataset[qid]
         # TODO: Store the test instances into the testPatterns array, once again as pairs.
         # TODO: Hint: The testing will be easier for you if you also now order the pairs - it will make it easy to see if the ANN agrees with your ordering.
+        for firstData in range(len(dataInstance)):
+            for secondData in range(firstData+1, len(dataInstance)):
+                if dataInstance[firstData].rating > dataInstance[secondData].rating:
+                    testPatterns.append((dataInstance[firstData].features, dataInstance[secondData].features))
+                elif dataInstance[firstData].rating < dataInstance[secondData].rating:
+                    testPatterns.append((dataInstance[secondData].features, dataInstance[firstData].features))
 
     # Check ANN performance before training
     nn.countMisorderedPairs(testPatterns)
