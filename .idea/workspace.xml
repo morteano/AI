@@ -29,8 +29,8 @@
       <file leaf-file-name="Backprop_skeleton.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/AI_EX5/Backprop_skeleton.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.9404145" vertical-offset="1592" max-vertical-offset="2550">
-              <caret line="115" column="32" selection-start-line="115" selection-start-column="32" selection-end-line="115" selection-end-column="32" />
+            <state vertical-scroll-proportion="-2.468912" vertical-offset="1599" max-vertical-offset="2550">
+              <caret line="38" column="40" selection-start-line="38" selection-start-column="40" selection-end-line="38" selection-end-column="40" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -511,7 +511,13 @@
       <option name="project" value="LOCAL" />
       <updated>1429190745360</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="changed updateWeights">
+      <created>1429190783488</created>
+      <option name="number" value="00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1429190783488</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -621,8 +627,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/AI_EX5/Backprop_skeleton.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.9404145" vertical-offset="1592" max-vertical-offset="2550">
-          <caret line="115" column="32" selection-start-line="115" selection-start-column="32" selection-end-line="115" selection-end-column="32" />
+        <state vertical-scroll-proportion="-2.468912" vertical-offset="1599" max-vertical-offset="2550">
+          <caret line="38" column="40" selection-start-line="38" selection-start-column="40" selection-end-line="38" selection-end-column="40" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
