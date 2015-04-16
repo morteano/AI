@@ -98,15 +98,14 @@ class NN: # Neural Network
     def computeHiddenDelta(self):
         # TODO: Remove this TODO
         for i in range(self.numHidden):
-            self.prevDeltaHidden[i] = logFuncDerivative(self.prevHiddenActivations[i])*self.weights[i]*(self.prevDeltaOutput-self.deltaOutput)
-            self.deltaHidden[i] = logFuncDerivative(self.hiddenActivations[i])*self.weights[i]*(self.prevDeltaOutput-self.deltaOutput)
+            self.prevDeltaHidden[i] = logFuncDerivative(self.prevHiddenActivations[i])*self.weightsOutput[i]*(self.prevDeltaOutput-self.deltaOutput)
+            self.deltaHidden[i] = logFuncDerivative(self.hiddenActivations[i])*self.weightsOutput[i]*(self.prevDeltaOutput-self.deltaOutput)
 
     def updateWeights(self):
         # TODO: Update the weights of the network using the deltas (see exercise text)
         pass
-        for i in range(self.numHidden):
-            for j in range(self.numInputs):
-                #rompa
+        for i in range(self.numInputs):
+            for j in range(self.numHidden):
                 self.weightsInput[i][j] += self.learningRate*(self.prevDeltaHidden[j]*self.prevInputActivations[i] - self.deltaHidden[j]*self.inputActivation[i])
 
     def backpropagate(self):
@@ -129,22 +128,28 @@ class NN: # Neural Network
         # TODO: Training is done  like this (details in exercise text):
         for it in range(iterations):
             for pair in patterns:
-                A = pair[0]
-                print(A)
-                B = pair[1]
-                self.propagate(A)
-                self.propagate(B)
+                # Propagate A
+                self.propagate(pair[0])
+                # Propagate B
+                self.propagate(pair[1])
                 self.backpropagate()
 
     def countMisorderedPairs(self, patterns):
         # TODO: Let the network classify all pairs of patterns. The highest output determines the winner.
+        numRight = 0
+        numMisses = 0
         # for each pair, do
-        # Propagate A
-        # Propagate B
-        # if A>B: A wins. If B>A: B wins
-        # if rating(winner) > rating(loser): numRight++
-        # else: numMisses++
-        # end of for
+        for pair in patterns:
+            A = pair[0]
+            B = pair[1]
+            # Propagate A
+            outputA = self.propagate(A)
+            # Propagate B
+            outputB = self.propagate(B)
+            if outputA > outputB:
+                numRight += 1
+            elif outputB > outputA:
+                numMisses += 1
         # TODO: Calculate the ratio of correct answers:
-        # errorRate = numMisses/(numRight+numMisses)
-        pass
+        errorRate = numMisses/(numRight+numMisses)
+        print(errorRate)
