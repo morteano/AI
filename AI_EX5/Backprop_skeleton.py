@@ -2,7 +2,6 @@ import math
 import random
 import copy
 
-
 # The transfer function of neurons, g(x)
 def logFunc(x):
     return (1.0/(1.0+math.exp(-x)))
@@ -91,7 +90,7 @@ class NN: # Neural Network
 
     def computeOutputDelta(self):
         # TODO: Remove this TODO
-        probAB = 1/(1+math.exp(-(self.prevOutputActivation+self.outputActivation)))
+        probAB = 1.0/(1+math.exp(-(self.prevOutputActivation+self.outputActivation)))
         self.prevDeltaOutput = logFuncDerivative(self.prevOutputActivation)*(1-probAB)
         self.deltaOutput = logFuncDerivative(self.outputActivation)*(1-probAB)
 
@@ -107,6 +106,8 @@ class NN: # Neural Network
         for i in range(self.numInputs):
             for j in range(self.numHidden):
                 self.weightsInput[i][j] += self.learningRate*(self.prevDeltaHidden[j]*self.prevInputActivations[i] - self.deltaHidden[j]*self.inputActivation[i])
+        for i in range(self.numHidden):
+            self.weightsOutput[i] += self.learningRate*(self.prevDeltaOutput*self.prevHiddenActivations[i] - self.deltaOutput*self.hiddenActivations[i])
 
     def backpropagate(self):
         self.computeOutputDelta()
@@ -136,8 +137,8 @@ class NN: # Neural Network
 
     def countMisorderedPairs(self, patterns):
         # TODO: Let the network classify all pairs of patterns. The highest output determines the winner.
-        numRight = 0
-        numMisses = 0
+        numRight = 0.0
+        numMisses = 0.0
         # for each pair, do
         for pair in patterns:
             A = pair[0]
@@ -150,6 +151,8 @@ class NN: # Neural Network
                 numRight += 1
             elif outputB > outputA:
                 numMisses += 1
+        print("numRight " + str(numRight))
+        print("numMisses " + str(numMisses))
         # TODO: Calculate the ratio of correct answers:
         errorRate = numMisses/(numRight+numMisses)
         print(errorRate)
