@@ -98,8 +98,8 @@ class NN: # Neural Network
     def computeHiddenDelta(self):
         # TODO: Remove this TODO
         for i in range(self.numHidden):
-            self.prevDeltaHidden[i] = logFuncDerivative(self.prevHiddenActivations)*self.weight[i]*(self.prevDeltaOutput-self.deltaOutput)
-            self.deltaHidden[i] = logFuncDerivative(self.hiddenActivations)*self.weight[i]*(self.prevDeltaOutput-self.deltaOutput)
+            self.prevDeltaHidden[i] = logFuncDerivative(self.prevHiddenActivations[i])*self.weights[i]*(self.prevDeltaOutput-self.deltaOutput)
+            self.deltaHidden[i] = logFuncDerivative(self.hiddenActivations[i])*self.weights[i]*(self.prevDeltaOutput-self.deltaOutput)
 
     def updateWeights(self):
         # TODO: Update the weights of the network using the deltas (see exercise text)
@@ -129,8 +129,9 @@ class NN: # Neural Network
         # TODO: Training is done  like this (details in exercise text):
         for it in range(iterations):
             for pair in patterns:
-                A = pair[0];
-                B = pair[1];
+                A = pair[0]
+                print(A)
+                B = pair[1]
                 self.propagate(A)
                 self.propagate(B)
                 self.backpropagate()
