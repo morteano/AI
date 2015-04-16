@@ -10,7 +10,7 @@ def logFunc(x):
 
 # The derivative of the transfer function, g'(x)
 def logFuncDerivative(x):
-    return math.exp(-x)/(pow(math.exp(-x)+1,2))
+    return math.exp(-x)/(pow(math.exp(-x)+1, 2))
 
 
 def randomFloat(low,high):
@@ -35,15 +35,15 @@ class NN: # Neural Network
         # Current activation levels for nodes (in other words, the nodes' output value)
         self.inputActivation = [1.0]*self.numInputs
         self.hiddenActivations = [1.0]*self.numHidden
-        self.outputActivation = 1.0 #Assuming a single output.
+        self.outputActivation = 1.0  # Assuming a single output.
         self.learningRate = learningRate
 
         # create weights
         # A matrix with all weights from input layer to hidden layer
         self.weightsInput = makeMatrix(self.numInputs,self.numHidden)
         # A list with all weights from hidden layer to the single output neuron.
-        self.weightsOutput = [0 for i in range(self.numHidden)]# Assuming single output
-        # set them to random vaules
+        self.weightsOutput = [0 for i in range(self.numHidden)]  # Assuming single output
+        # set them to random values
         for i in range(self.numInputs):
             for j in range(self.numHidden):
                 self.weightsInput[i][j] = randomFloat(-0.5, 0.5)
@@ -90,16 +90,23 @@ class NN: # Neural Network
         return self.outputActivation
 
     def computeOutputDelta(self):
-        # TODO: Implement the delta function for the output layer (see exercise text)
-        pass
+        # TODO: Remove this TODO
+        probAB = 1/(1+math.exp(-(self.prevOutputActivation+self.outputActivation)))
+        self.prevDeltaOutput = logFuncDerivative(self.prevOutputActivation)*(1-probAB)
+        self.deltaOutput = logFuncDerivative(self.outputActivation)*(1-probAB)
 
     def computeHiddenDelta(self):
-        # TODO: Implement the delta function for the hidden layer (see exercise text)
-        pass
+        # TODO: Remove this TODO
+        for i in range(self.numHidden):
+            self.prevDeltaHidden[i] = logFuncDerivative(self.prevHiddenActivations)*self.weight[i]*(self.prevDeltaOutput-self.deltaOutput)
+            self.deltaHidden[i] = logFuncDerivative(self.hiddenActivations)*self.weight[i]*(self.prevDeltaOutput-self.deltaOutput)
 
     def updateWeights(self):
         # TODO: Update the weights of the network using the deltas (see exercise text)
         pass
+        for i in range(self.numHidden):
+            for j in range(self.numInputs):
+                self.weightsOutput[i][j] += self.learningRate*(self.delt)
 
     def backpropagate(self):
         self.computeOutputDelta()
