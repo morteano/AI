@@ -106,6 +106,7 @@ class NN: # Neural Network
         pass
         for i in range(self.numHidden):
             for j in range(self.numInputs):
+                #rompa
                 self.weightsInput[i][j] += self.learningRate*(self.prevDeltaHidden[j]*self.prevInputActivations[i] - self.deltaHidden[j]*self.inputActivation[i])
 
     def backpropagate(self):
