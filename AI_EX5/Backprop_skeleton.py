@@ -155,4 +155,4 @@ class NN: # Neural Network
         print("numMisses " + str(numMisses))
         # TODO: Calculate the ratio of correct answers:
         errorRate = numMisses/(numRight+numMisses)
-        print(errorRate)
+        return errorRate

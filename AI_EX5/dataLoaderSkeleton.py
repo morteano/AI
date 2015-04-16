@@ -1,5 +1,5 @@
-__author__ = 'kaiolae'
-__author__ = 'kaiolae'
+__author__ = 'morteano'
+__author__ = 'helmer'
 import Backprop_skeleton as Bp
 
 
@@ -82,12 +82,15 @@ def runRanker(trainingset, testset):
 
     # Check ANN performance before training
     nn.countMisorderedPairs(testPatterns)
-    for i in range(25):
+    it = 25
+    errorrateArr = [0]*it
+    for i in range(it):
         # Running 25 iterations, measuring testing performance after each round of training.
         # Training
         nn.train(trainingPatterns, iterations=1)
         # Check ANN performance after training.
-        nn.countMisorderedPairs(testPatterns)
+        errorrateArr[i] = nn.countMisorderedPairs(testPatterns)
+        print(errorrateArr[i])
 
         # TODO: Store the data returned by countMisorderedPairs and plot it, showing how training and testing errors develop.
 
