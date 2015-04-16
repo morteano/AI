@@ -104,9 +104,9 @@ class NN: # Neural Network
     def updateWeights(self):
         # TODO: Update the weights of the network using the deltas (see exercise text)
         pass
-        for i in range(self.numInputs):
-            for j in range(self.numHidden):
-                self.weightsInput[i][j] += self.learningRate*((self.prevDeltaHidden[j]*self.prevInputActivations[i]) - (self.deltaHidden[j]*self.inputActivation[i]))
+        for i in range(self.numHidden):
+            for j in range(self.numInputs):
+                self.weightsInput[i][j] += self.learningRate*(self.prevDeltaHidden[j]*self.prevInputActivations[i] - self.deltaHidden[j]*self.inputActivation[i])
 
     def backpropagate(self):
         self.computeOutputDelta()
