@@ -81,17 +81,23 @@ def runRanker(trainingset, testset):
                     testPatterns.append((dataInstance[secondData].features, dataInstance[firstData].features))
 
     # Check ANN performance before training
-    nn.countMisorderedPairs(testPatterns)
     it = 25
-    errorrateArr = [0]*it
+    errorrateArr = [0]*(it+1)
+    errorrateArr[0] = nn.countMisorderedPairs(testPatterns)
     for i in range(it):
         # Running 25 iterations, measuring testing performance after each round of training.
         # Training
         nn.train(trainingPatterns, iterations=1)
         # Check ANN performance after training.
-        errorrateArr[i] = nn.countMisorderedPairs(testPatterns)
-        print(errorrateArr[i])
+        errorrateArr[i+1] = nn.countMisorderedPairs(testPatterns)
+        print(errorrateArr[i+1])
+        print(i)
 
+    for i in range(10):
+        print("")
+    print("x y")
+    for i in range(it+1):
+        print(str(i) + " " + str(errorrateArr[i]))
         # TODO: Store the data returned by countMisorderedPairs and plot it, showing how training and testing errors develop.
 
 
