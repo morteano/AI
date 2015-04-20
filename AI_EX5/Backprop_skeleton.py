@@ -89,19 +89,16 @@ class NN: # Neural Network
         return self.outputActivation
 
     def computeOutputDelta(self):
-        # TODO: Remove this TODO
         probAB = 1.0/(1+math.exp(-(self.prevOutputActivation+self.outputActivation)))
         self.prevDeltaOutput = logFuncDerivative(self.prevOutputActivation)*(1-probAB)
         self.deltaOutput = logFuncDerivative(self.outputActivation)*(1-probAB)
 
     def computeHiddenDelta(self):
-        # TODO: Remove this TODO
         for i in range(self.numHidden):
             self.prevDeltaHidden[i] = logFuncDerivative(self.prevHiddenActivations[i])*self.weightsOutput[i]*(self.prevDeltaOutput-self.deltaOutput)
             self.deltaHidden[i] = logFuncDerivative(self.hiddenActivations[i])*self.weightsOutput[i]*(self.prevDeltaOutput-self.deltaOutput)
 
     def updateWeights(self):
-        # TODO: Update the weights of the network using the deltas (see exercise text)
         pass
         for i in range(self.numInputs):
             for j in range(self.numHidden):
@@ -124,9 +121,7 @@ class NN: # Neural Network
         print(self.weightsOutput)
 
     def train(self, patterns, iterations=1):
-        # TODO: Train the network on all patterns for a number of iterations.
         # To measure performance each iteration: Run for 1 iteration, then count misordered pairs.
-        # TODO: Training is done  like this (details in exercise text):
         for it in range(iterations):
             for pair in patterns:
                 # Propagate A
@@ -136,7 +131,6 @@ class NN: # Neural Network
                 self.backpropagate()
 
     def countMisorderedPairs(self, patterns):
-        # TODO: Let the network classify all pairs of patterns. The highest output determines the winner.
         numRight = 0.0
         numMisses = 0.0
         # for each pair, do
@@ -151,8 +145,5 @@ class NN: # Neural Network
                 numRight += 1
             elif outputB > outputA:
                 numMisses += 1
-        print("numRight " + str(numRight))
-        print("numMisses " + str(numMisses))
-        # TODO: Calculate the ratio of correct answers:
         errorRate = numMisses/(numRight+numMisses)
         return errorRate
